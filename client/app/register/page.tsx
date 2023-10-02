@@ -55,11 +55,24 @@ const Register: React.FC = () => {
         setUserCredentials({ ...userCredentials, [name]: value });
     };
 
+    const [signUpOk, setSignUpOk] = useState(false);
+
     const handleSubmit = () => {
         if (validateForm()) {
-            // Submit logic here
+            console.log(userCredentials);
+            setUserCredentials({ email: "", password: "" });
+            setPassCheck("");
+            setSignUpOk(!signUpOk);
         }
     };
+
+    useEffect(() => {
+
+        if (signUpOk) {
+            setTimeout(() => { setSignUpOk(!signUpOk); }, 1500);
+        }
+
+    }, [signUpOk]);
 
     return (
         <div>
@@ -100,6 +113,13 @@ const Register: React.FC = () => {
                         <button disabled={enableSubmit} onClick={handleSubmit} type="button">
                             Submit
                         </button>
+                        {
+                            signUpOk ?
+                                <p className={styles.confirmation}>
+                                    User added succesfully!
+                                </p>
+                                : <p style={{ height: '20px' }}></p>
+                        }
                     </form>
                 </div>
             </div>
