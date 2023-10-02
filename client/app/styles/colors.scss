@@ -1,0 +1,35 @@
+$defaultWhite: #fff;
+$defaultBlack: #000;
+$defaultGray: #595959;
+$yellow: #f6e172;
+$green: #3dc39b;
+$blue: #0e65ac;
+$red: #DE5757;
+$lightPurple: #b887e0;
+$teal: #00b5b5;
+$coral: #ff6f61;
+$lavender: #b39ddb;
+$peach: #ffb07c;
+$indigo: #4b0082;
+$mustard: #ffdb58;
+$slateBlue: #6a5acd;
+$terracotta: #e2725b;
+
+:export {
+    defaultWhite: $defaultWhite;
+    defaultBlack: $defaultBlack;
+    defaultGray: $defaultGray;
+    yellow: $yellow;
+    green: $green;
+    blue: $blue;
+    red: $red;
+    lightPurple: $lightPurple;
+    teal: $teal;
+    coral: $coral;
+    lavender: $lavender;
+    peach: $peach;
+    indigo: $indigo;
+    mustard: $mustard;
+    slateBlue: $slateBlue;
+    terracotta: $terracotta;
+}

@@ -1,0 +1,23 @@
+@import '../styles/global.scss';
+
+.homeContainer {
+    // width: 798px;
+    height: 500px;
+    margin-top: 1rem;
+    background-color: $defaultBlack;
+    color: $defaultWhite;
+    gap: 2rem;
+
+    display: flex;
+    padding-top: 1rem;
+    justify-content: center;
+    align-items: center;
+
+    .registerForm {
+        gap: 1rem;
+        display: flex;
+        flex-direction: column;
+
+    }
+
+}

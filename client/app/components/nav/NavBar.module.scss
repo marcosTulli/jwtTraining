@@ -1,0 +1,20 @@
+/* styles/Navbar.module.css */
+
+.navContainer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 1rem;
+    background-color: #333;
+
+    .navItem {
+        color: white;
+        text-decoration: none;
+        margin-right: 1rem;
+
+    }
+
+    .navItem:hover {
+        text-decoration: underline;
+    }
+
+}
