@@ -9,7 +9,6 @@ app.use(express.json());
 app.use(cors());
 
 app.post('/register', (req, res) => {
-  res.send('HI');
   console.log(req.body);
 });
 

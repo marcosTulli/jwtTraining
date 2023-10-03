@@ -16,7 +16,7 @@ const Register: React.FC = () => {
     const [fieldError, setFieldError] = useState<string[]>([]);
     const [signUpOk, setSignUpOk] = useState(false);
     const [signUpNok, setSignUpNok] = useState(false);
-    const url = 'http://localhost:3001/register';
+    const url = 'http://localhost:3001/register'; // TODO: Create .env file
 
     const emailRegex = /^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/;
     const messages: Record<string, string> = {
@@ -27,19 +27,15 @@ const Register: React.FC = () => {
 
     const validateForm = () => {
         const errors: Record<string, string> = {};
-
         if (!emailRegex.test(userCredentials.email)) {
             errors.email = messages.email;
         }
-
         if (!userCredentials.password || userCredentials.password.length < 8) {
             errors.password = messages.password;
         }
-
         if (userCredentials.password !== passcheck) {
             errors.passwordMatch = messages.passwordMatch;
         }
-
         setFieldError(Object.keys(errors));
 
         return Object.keys(errors).length === 0;
@@ -62,19 +58,19 @@ const Register: React.FC = () => {
 
     const handleSubmit = async () => {
         if (validateForm()) {
+            // TODO: Abstract Function
             axios
                 .post(url, userCredentials)
                 .then((res) => {
                     setSignUpOk(!signUpOk);
                     setUserCredentials({ email: "", password: "" });
-                    setPassCheck("");
-                    console.log("Salio Bien");
                     console.log(res);
                 })
                 .catch((e) => {
                     setSignUpNok(!signUpNok);
-                    console.log("Salio Mal");
                     console.log(e);
+                }).finally(() => {
+                    setPassCheck("");
                 });
         }
     };
@@ -99,6 +95,7 @@ const Register: React.FC = () => {
                     <p>Register</p>
                     <form className={styles.registerForm}>
                         <input
+                            autoComplete='true'
                             type="text"
                             name="email"
                             placeholder="Email Address"
@@ -109,6 +106,7 @@ const Register: React.FC = () => {
                             {fieldError.includes('email') ? <p>{messages.email}</p> : <p></p>}
                         </div>
                         <input
+                            autoComplete="true"
                             type="password"
                             name="password"
                             placeholder="Password"
@@ -119,6 +117,7 @@ const Register: React.FC = () => {
                             {fieldError.includes('password') ? <p>{messages.password}</p> : <p></p>}
                         </div>
                         <input
+                            name="passwordConfirmation"
                             type="password"
                             placeholder="Confirm Password"
                             value={passcheck || ''}
@@ -130,6 +129,7 @@ const Register: React.FC = () => {
                         <button disabled={enableSubmit} onClick={handleSubmit} type="button">
                             Submit
                         </button>
+                        {/* TODO: Optimize rendering */}
                         {
                             signUpOk ?
                                 <p className={styles.confirmation}>
