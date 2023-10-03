@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import NavBar from '@/app/components/nav/NavBar';
 import styles from './Register.module.scss';
+import axios from 'axios';
 
 interface UserCredentials {
     email: string;
@@ -13,6 +14,9 @@ const Register: React.FC = () => {
     const [passcheck, setPassCheck] = useState<string | null>(null);
     const [enableSubmit, setEnableSubmit] = useState<boolean>(true);
     const [fieldError, setFieldError] = useState<string[]>([]);
+    const [signUpOk, setSignUpOk] = useState(false);
+    const [signUpNok, setSignUpNok] = useState(false);
+    const url = 'http://localhost:3001/register';
 
     const emailRegex = /^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/;
     const messages: Record<string, string> = {
@@ -55,14 +59,23 @@ const Register: React.FC = () => {
         setUserCredentials({ ...userCredentials, [name]: value });
     };
 
-    const [signUpOk, setSignUpOk] = useState(false);
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (validateForm()) {
-            console.log(userCredentials);
-            setUserCredentials({ email: "", password: "" });
-            setPassCheck("");
-            setSignUpOk(!signUpOk);
+            axios
+                .post(url, userCredentials)
+                .then((res) => {
+                    setSignUpOk(!signUpOk);
+                    setUserCredentials({ email: "", password: "" });
+                    setPassCheck("");
+                    console.log("Salio Bien");
+                    console.log(res);
+                })
+                .catch((e) => {
+                    setSignUpNok(!signUpNok);
+                    console.log("Salio Mal");
+                    console.log(e);
+                });
         }
     };
 
@@ -71,8 +84,12 @@ const Register: React.FC = () => {
         if (signUpOk) {
             setTimeout(() => { setSignUpOk(!signUpOk); }, 1500);
         }
+        if (signUpNok) {
 
-    }, [signUpOk]);
+            setTimeout(() => { setSignUpNok(!signUpNok); }, 2500);
+        }
+
+    }, [signUpOk, signUpNok]);
 
     return (
         <div>
@@ -118,7 +135,12 @@ const Register: React.FC = () => {
                                 <p className={styles.confirmation}>
                                     User added succesfully!
                                 </p>
-                                : <p style={{ height: '20px' }}></p>
+                                : signUpNok ?
+                                    <p className={styles.confirmationRejected}>
+                                        Unable to add user
+                                    </p>
+
+                                    : <p style={{ height: '20px' }}></p>
                         }
                     </form>
                 </div>
