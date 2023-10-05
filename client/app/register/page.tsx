@@ -16,6 +16,7 @@ const Register: React.FC = () => {
     const [fieldError, setFieldError] = useState<string[]>([]);
     const [signUpOk, setSignUpOk] = useState(false);
     const [signUpNok, setSignUpNok] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const url = 'http://localhost:3001/register'; // TODO: Create .env file
 
     const emailRegex = /^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/;
@@ -55,9 +56,9 @@ const Register: React.FC = () => {
         setUserCredentials({ ...userCredentials, [name]: value });
     };
 
-
     const handleSubmit = async () => {
         if (validateForm()) {
+            setIsLoading(true);
             // TODO: Abstract Function
             axios
                 .post(url, userCredentials)
@@ -71,6 +72,7 @@ const Register: React.FC = () => {
                     console.log(e);
                 }).finally(() => {
                     setPassCheck("");
+                    setIsLoading(false);
                 });
         }
     };
@@ -126,11 +128,14 @@ const Register: React.FC = () => {
                         <div className={styles.validationError}>
                             {fieldError.includes('passwordMatch') ? <p>{messages.passwordMatch}</p> : <p></p>}
                         </div>
-                        <button disabled={enableSubmit} onClick={handleSubmit} type="button">
+                        <button disabled={enableSubmit} onClick={handleSubmit} type="button" className={styles.submit}>
                             Submit
                         </button>
                         {/* TODO: Optimize rendering */}
-                        {
+                    </form>
+                    {
+                        isLoading ? <p className={styles.loading}> Loading ... </p>
+                            :
                             signUpOk ?
                                 <p className={styles.confirmation}>
                                     User added succesfully!
@@ -141,8 +146,7 @@ const Register: React.FC = () => {
                                     </p>
 
                                     : <p style={{ height: '20px' }}></p>
-                        }
-                    </form>
+                    }
                 </div>
             </div>
         </div>

@@ -31,8 +31,20 @@
 
     }
 
+    .submit {
+        cursor: pointer
+    }
 
 
+
+}
+
+.loading {
+
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+    color: $slateBlue
 }
 
 .confirmation {
