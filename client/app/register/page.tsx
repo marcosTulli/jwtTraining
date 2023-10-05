@@ -15,6 +15,7 @@ const Register: React.FC = () => {
     const [enableSubmit, setEnableSubmit] = useState<boolean>(true);
     const [fieldError, setFieldError] = useState<string[]>([]);
     const [signUpOk, setSignUpOk] = useState(false);
+    const [rejectMessage, setRejectMessage] = useState<string>("Unable to add user");
     const [signUpNok, setSignUpNok] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const url = 'http://localhost:3001/register'; // TODO: Create .env file
@@ -38,7 +39,6 @@ const Register: React.FC = () => {
             errors.passwordMatch = messages.passwordMatch;
         }
         setFieldError(Object.keys(errors));
-
         return Object.keys(errors).length === 0;
     };
 
@@ -69,7 +69,7 @@ const Register: React.FC = () => {
                 })
                 .catch((e) => {
                     setSignUpNok(!signUpNok);
-                    console.log(e);
+                    e.response.status === 409 && setRejectMessage("User already exists");
                 }).finally(() => {
                     setPassCheck("");
                     setIsLoading(false);
@@ -78,7 +78,6 @@ const Register: React.FC = () => {
     };
 
     useEffect(() => {
-
         if (signUpOk) {
             setTimeout(() => { setSignUpOk(!signUpOk); }, 1500);
         }
@@ -142,9 +141,8 @@ const Register: React.FC = () => {
                                 </p>
                                 : signUpNok ?
                                     <p className={styles.confirmationRejected}>
-                                        Unable to add user
+                                        {rejectMessage}
                                     </p>
-
                                     : <p style={{ height: '20px' }}></p>
                     }
                 </div>
