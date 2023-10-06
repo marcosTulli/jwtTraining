@@ -6,6 +6,7 @@ const { MongoClient, ObjectID } = require('mongodb');
 const PORT = process.env.PORT || 3001;
 const MONGO_URL = process.env.MONGO_URL;
 const DB_NAME = process.env.DB_NAME;
+const jwt = require('./services/jwt');
 
 const app = express();
 
@@ -50,7 +51,14 @@ const postUser = async (req, res) => {
   }
 };
 
+console.log(jwt.encode('hi', 'secret'));
+
 app.post('/register', (req, res) => {
+  const payload = {
+    iss: req.hostname,
+    sub: req.body._id,
+  };
+  const token = jwt.encode(payload, 'shhh...');
   postUser(req, res);
 });
 
