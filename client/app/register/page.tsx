@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import NavBar from '@/app/components/nav/NavBar';
 import styles from './Register.module.scss';
 import axios from 'axios';
+const base64 = require('base-64');
 
 interface UserCredentials {
     email: string;
@@ -43,13 +44,20 @@ const Register: React.FC = () => {
     };
 
     useEffect(() => {
-        if (userCredentials.email.length > 0) {
+        if (userCredentials.email.length > 3) {
             setEnableSubmit(false);
             setFieldError([]);
         } else {
             setEnableSubmit(true);
         }
     }, [userCredentials]);
+
+    useEffect(() => {
+        if (enableSubmit) {
+        }
+
+    }, [userCredentials]);
+
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -59,6 +67,7 @@ const Register: React.FC = () => {
     const handleSubmit = async () => {
         if (validateForm()) {
             setIsLoading(true);
+            userCredentials.password = base64.encode(userCredentials.password);
             // TODO: Abstract Function
             axios
                 .post(url, userCredentials)
@@ -105,6 +114,7 @@ const Register: React.FC = () => {
                         />
                         <div className={styles.validationError}>
                             {fieldError.includes('email') ? <p>{messages.email}</p> : <p></p>}
+
                         </div>
                         <input
                             autoComplete="true"

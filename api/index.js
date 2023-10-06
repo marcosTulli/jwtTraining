@@ -1,8 +1,9 @@
 require('dotenv').config();
 const express = require('express');
-const PORT = process.env.PORT || 3001;
 const cors = require('cors');
+const bcrypt = require('bcrypt-nodejs');
 const { MongoClient, ObjectID } = require('mongodb');
+const PORT = process.env.PORT || 3001;
 const MONGO_URL = process.env.MONGO_URL;
 const DB_NAME = process.env.DB_NAME;
 
