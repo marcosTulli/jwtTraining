@@ -29,6 +29,11 @@ const drop = () => {
 
 const postUser = async (req, res) => {
   const { email, password } = req.body;
+  const payload = {
+    iss: req.hostname,
+    sub: req.body._id,
+  };
+  const token = jwt.encode(payload, 'shhh...');
   try {
     const client = await MongoClient.connect(MONGO_URL);
     const db = client.db(DB_NAME);
@@ -42,7 +47,7 @@ const postUser = async (req, res) => {
       // User doesn't exist, so insert the new user
       const user = { email, password };
       await db.collection('users').insertOne(user);
-      res.sendStatus(200); // User created successfully
+      res.status(200).send({ user: req.body, token: token }); // User created successfully
     }
     client.close();
   } catch (error) {
@@ -51,14 +56,7 @@ const postUser = async (req, res) => {
   }
 };
 
-console.log(jwt.encode('hi', 'secret'));
-
 app.post('/register', (req, res) => {
-  const payload = {
-    iss: req.hostname,
-    sub: req.body._id,
-  };
-  const token = jwt.encode(payload, 'shhh...');
   postUser(req, res);
 });
 

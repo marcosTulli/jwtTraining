@@ -68,7 +68,6 @@ const Register: React.FC = () => {
         if (validateForm()) {
             setIsLoading(true);
             userCredentials.password = base64.encode(userCredentials.password);
-            // TODO: Abstract Function
             axios
                 .post(url, userCredentials)
                 .then((res) => {
