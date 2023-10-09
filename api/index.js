@@ -28,7 +28,7 @@ const drop = () => {
 };
 
 const postUser = async (req, res) => {
-  const { email, password } = req.body;
+  const { firstName, lastName, email, password } = req.body;
   const payload = {
     iss: req.hostname,
     sub: req.body.email,
@@ -45,7 +45,7 @@ const postUser = async (req, res) => {
       res.sendStatus(409); // User already exists
     } else {
       // User doesn't exist, so insert the new user
-      const user = { email, password };
+      const user = { firstName, lastName, email, password };
       await db.collection('users').insertOne(user);
       res.status(200).send({ user: req.body, token: token }); // User created successfully
     }
@@ -63,6 +63,7 @@ app.post('/register', (req, res) => {
 app.delete('/', (req, res) => {
   console.log('Dropping DB');
   drop();
+  res.send(200);
 });
 
 app.listen(PORT, () => {

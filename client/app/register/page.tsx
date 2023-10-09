@@ -7,12 +7,18 @@ import { authToken } from "@/app/utils/index";
 const base64 = require('base-64');
 
 interface UserCredentials {
+    firstName: string;
+    lastName: string;
     email: string;
     password: string;
 }
 
+const blankUser = {
+    firstName: '', lastName: '', email: '', password: ''
+};
+
 const Register: React.FC = () => {
-    const [userCredentials, setUserCredentials] = useState<UserCredentials>({ email: '', password: '' });
+    const [userCredentials, setUserCredentials] = useState<UserCredentials>(blankUser);
     const [passcheck, setPassCheck] = useState<string | null>(null);
     const [enableSubmit, setEnableSubmit] = useState<boolean>(true);
     const [fieldError, setFieldError] = useState<string[]>([]);
@@ -66,14 +72,14 @@ const Register: React.FC = () => {
                 .post(url, userCredentials)
                 .then((res) => {
                     setSignUpOk(!signUpOk);
-                    setUserCredentials({ email: "", password: "" });
+                    setUserCredentials(blankUser);
                     authToken(window).setToken(res.data.token);
                     console.log("Registered succesfully");
 
                 })
                 .catch((e) => {
                     setSignUpNok(!signUpNok);
-                    setUserCredentials({ email: "", password: "" });
+                    setUserCredentials(blankUser);
                     if (e.response.status === 409) {
                         setRejectMessage("User already exists");
                         console.log("User Already exists");
@@ -98,6 +104,7 @@ const Register: React.FC = () => {
 
     }, [signUpOk, signUpNok]);
 
+
     return (
         <div>
             <NavBar />
@@ -105,6 +112,28 @@ const Register: React.FC = () => {
                 <div>
                     <p>Register</p>
                     <form className={styles.registerForm}>
+                        <input
+                            autoComplete='true'
+                            type="text"
+                            name="firstName"
+                            placeholder="First Name"
+                            value={userCredentials.firstName}
+                            onChange={handleInputChange}
+                        />
+                        <div className={styles.validationError}>
+                            <p></p>
+                        </div>
+                        <input
+                            autoComplete='true'
+                            type="text"
+                            name="lastName"
+                            placeholder="Last Name"
+                            value={userCredentials.lastName}
+                            onChange={handleInputChange}
+                        />
+                        <div className={styles.validationError}>
+                            <p></p>
+                        </div>
                         <input
                             autoComplete='true'
                             type="text"
