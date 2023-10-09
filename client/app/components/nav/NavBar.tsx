@@ -1,7 +1,10 @@
 import Link from 'next/link';
 import styles from './NavBar.module.scss';
+import { useGlobalContext } from '@/app/store/store';
 
 const Navbar: React.FC = () => {
+    const { isAuthenticated } = useGlobalContext();
+
     return (
         <nav>
             <div className={styles.navContainer}>
