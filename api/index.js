@@ -60,6 +60,11 @@ app.post('/register', (req, res) => {
   postUser(req, res);
 });
 
+app.delete('/', (req, res) => {
+  console.log('Dropping DB');
+  drop();
+});
+
 app.listen(PORT, () => {
   console.log('Listening on port', PORT);
 });
