@@ -31,7 +31,7 @@ const postUser = async (req, res) => {
   const { email, password } = req.body;
   const payload = {
     iss: req.hostname,
-    sub: req.body._id,
+    sub: req.body.email,
   };
   const token = jwt.encode(payload, 'shhh...');
   try {

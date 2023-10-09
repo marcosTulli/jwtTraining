@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import NavBar from '@/app/components/nav/NavBar';
 import styles from './Register.module.scss';
 import axios from 'axios';
+import { authToken } from "@/app/utils/index";
 const base64 = require('base-64');
 
 interface UserCredentials {
@@ -52,13 +53,6 @@ const Register: React.FC = () => {
         }
     }, [userCredentials]);
 
-    useEffect(() => {
-        if (enableSubmit) {
-        }
-
-    }, [userCredentials]);
-
-
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setUserCredentials({ ...userCredentials, [name]: value });
@@ -73,11 +67,20 @@ const Register: React.FC = () => {
                 .then((res) => {
                     setSignUpOk(!signUpOk);
                     setUserCredentials({ email: "", password: "" });
-                    console.log(res);
+                    authToken(window).setToken(res.data.token);
+                    console.log("Registered succesfully");
+
                 })
                 .catch((e) => {
                     setSignUpNok(!signUpNok);
-                    e.response.status === 409 && setRejectMessage("User already exists");
+                    setUserCredentials({ email: "", password: "" });
+                    if (e.response.status === 409) {
+                        setRejectMessage("User already exists");
+                        console.log("User Already exists");
+                    }
+                    else {
+                        console.log("Unable to add user");
+                    }
                 }).finally(() => {
                     setPassCheck("");
                     setIsLoading(false);
@@ -90,7 +93,6 @@ const Register: React.FC = () => {
             setTimeout(() => { setSignUpOk(!signUpOk); }, 1500);
         }
         if (signUpNok) {
-
             setTimeout(() => { setSignUpNok(!signUpNok); }, 2500);
         }
 
