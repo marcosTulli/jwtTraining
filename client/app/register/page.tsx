@@ -23,7 +23,7 @@ const Register: React.FC = () => {
     const [rejectMessage, setRejectMessage] = useState<string>("Unable to add user");
     const [signUpNok, setSignUpNok] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const { user, setUser } = useGlobalContext();
+    const { user, setUser, isAuthenticated } = useGlobalContext();
     const url = 'http://localhost:3001/register'; // TODO: Create .env file
     const emailRegex = /^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/;
     const messages: Record<string, string> = {
@@ -31,6 +31,7 @@ const Register: React.FC = () => {
         password: 'Password must be at least 8 characters long',
         passwordMatch: 'Passwords do not match',
     };
+
 
 
     const validateForm = () => {
@@ -47,6 +48,12 @@ const Register: React.FC = () => {
         setFieldError(Object.keys(errors));
         return Object.keys(errors).length === 0;
     };
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            router.push('/');
+        }
+    }, [isAuthenticated]);
 
     useEffect(() => {
         if (user.email.length > 3) {

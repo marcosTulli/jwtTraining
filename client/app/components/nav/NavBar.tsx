@@ -41,6 +41,9 @@ const Navbar: React.FC = () => {
 
                         :
                         <div >
+                            <Link className={styles.navItem} href="/seminars">
+                                Seminars
+                            </Link>
                             {userName}
                             <button
                                 onClick={() => handleLogOut()}

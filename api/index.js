@@ -27,6 +27,18 @@ const drop = () => {
   })();
 };
 
+const getSeminars = async (req, res) => {
+  try {
+    const client = await MongoClient.connect(MONGO_URL);
+    const db = client.db('globomantics');
+    const seminars = await db.collection('sessions').find().limit(10).toArray();
+    res.status(200).send(seminars);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+};
+
 const postUser = async (req, res) => {
   const { firstName, lastName, email, password } = req.body;
   const payload = {
@@ -64,6 +76,10 @@ app.delete('/', (req, res) => {
   console.log('Dropping DB');
   drop();
   res.send(200);
+});
+
+app.get('/seminars', (req, res) => {
+  getSeminars(req, res);
 });
 
 app.listen(PORT, () => {

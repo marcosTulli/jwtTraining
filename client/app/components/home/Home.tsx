@@ -2,7 +2,7 @@
 import React, { useEffect } from 'react';
 import styles from './Home.module.scss';
 import { useMediaQuery } from '@mui/material';
-import NavBar from '../nav/NavBar';
+import NavBar from '@/app/components/nav/NavBar';
 import { useGlobalContext } from '@/app/store/store';
 import { authToken } from '@/app/utils';
 
