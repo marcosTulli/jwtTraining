@@ -1,24 +1,21 @@
 'use client';
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import NavBar from '@/app/components/nav/NavBar';
 import styles from './Register.module.scss';
 import axios from 'axios';
 import { authToken } from "@/app/utils/index";
+import { User } from '@/app/models/models';
+import { useGlobalContext } from '../store/store';
 const base64 = require('base-64');
-
-interface UserCredentials {
-    firstName: string;
-    lastName: string;
-    email: string;
-    password: string;
-}
 
 const blankUser = {
     firstName: '', lastName: '', email: '', password: ''
 };
 
 const Register: React.FC = () => {
-    const [userCredentials, setUserCredentials] = useState<UserCredentials>(blankUser);
+    const router = useRouter();
+    const [formValues, setFormValues] = useState<User>(blankUser);
     const [passcheck, setPassCheck] = useState<string | null>(null);
     const [enableSubmit, setEnableSubmit] = useState<boolean>(true);
     const [fieldError, setFieldError] = useState<string[]>([]);
@@ -26,8 +23,8 @@ const Register: React.FC = () => {
     const [rejectMessage, setRejectMessage] = useState<string>("Unable to add user");
     const [signUpNok, setSignUpNok] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const { user, setUser } = useGlobalContext();
     const url = 'http://localhost:3001/register'; // TODO: Create .env file
-
     const emailRegex = /^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/;
     const messages: Record<string, string> = {
         email: 'Email must contain @ symbol and a domain',
@@ -35,15 +32,16 @@ const Register: React.FC = () => {
         passwordMatch: 'Passwords do not match',
     };
 
+
     const validateForm = () => {
         const errors: Record<string, string> = {};
-        if (!emailRegex.test(userCredentials.email)) {
+        if (!emailRegex.test(user.email)) {
             errors.email = messages.email;
         }
-        if (!userCredentials.password || userCredentials.password.length < 8) {
+        if (!user.password || user.password.length < 8) {
             errors.password = messages.password;
         }
-        if (userCredentials.password !== passcheck) {
+        if (user.password !== passcheck) {
             errors.passwordMatch = messages.passwordMatch;
         }
         setFieldError(Object.keys(errors));
@@ -51,35 +49,37 @@ const Register: React.FC = () => {
     };
 
     useEffect(() => {
-        if (userCredentials.email.length > 3) {
+        if (user.email.length > 3) {
             setEnableSubmit(false);
             setFieldError([]);
         } else {
             setEnableSubmit(true);
         }
-    }, [userCredentials]);
+    }, [user]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        setUserCredentials({ ...userCredentials, [name]: value });
+        setUser({ ...user, [name]: value });
+        setFormValues({ ...formValues, [name]: value });
     };
+
 
     const handleSubmit = async () => {
         if (validateForm()) {
             setIsLoading(true);
-            userCredentials.password = base64.encode(userCredentials.password);
+            user.password = base64.encode(user.password);
             axios
-                .post(url, userCredentials)
+                .post(url, user)
                 .then((res) => {
                     setSignUpOk(!signUpOk);
-                    setUserCredentials(blankUser);
+                    setFormValues(blankUser);
                     authToken(window).setToken(res.data.token);
                     console.log("Registered succesfully");
-
+                    router.push('/');
                 })
                 .catch((e) => {
                     setSignUpNok(!signUpNok);
-                    setUserCredentials(blankUser);
+                    setUser(blankUser);
                     if (e.response.status === 409) {
                         setRejectMessage("User already exists");
                         console.log("User Already exists");
@@ -117,7 +117,7 @@ const Register: React.FC = () => {
                             type="text"
                             name="firstName"
                             placeholder="First Name"
-                            value={userCredentials.firstName}
+                            value={formValues.firstName}
                             onChange={handleInputChange}
                         />
                         <div className={styles.validationError}>
@@ -128,7 +128,7 @@ const Register: React.FC = () => {
                             type="text"
                             name="lastName"
                             placeholder="Last Name"
-                            value={userCredentials.lastName}
+                            value={formValues.lastName}
                             onChange={handleInputChange}
                         />
                         <div className={styles.validationError}>
@@ -139,7 +139,7 @@ const Register: React.FC = () => {
                             type="text"
                             name="email"
                             placeholder="Email Address"
-                            value={userCredentials.email}
+                            value={formValues.email}
                             onChange={handleInputChange}
                         />
                         <div className={styles.validationError}>
@@ -151,7 +151,7 @@ const Register: React.FC = () => {
                             type="password"
                             name="password"
                             placeholder="Password"
-                            value={userCredentials.password}
+                            value={formValues.password}
                             onChange={handleInputChange}
                         />
                         <div className={styles.validationError}>

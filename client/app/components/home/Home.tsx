@@ -7,8 +7,9 @@ import { useGlobalContext } from '@/app/store/store';
 import { authToken } from '@/app/utils';
 
 export default function Home() {
-    const { isAuthenticated, setIsAuthenticated } = useGlobalContext();
+    const { isAuthenticated, setIsAuthenticated, user } = useGlobalContext();
     const isMobile = useMediaQuery('(max-width: 500px)');
+    const userName = user.firstName.charAt(0).toUpperCase().concat(user.firstName.substring(1));
 
     useEffect(() => {
         if (!isAuthenticated) {
@@ -26,7 +27,7 @@ export default function Home() {
                     isAuthenticated
                         ?
                         <h1>
-                            Welcome home
+                            Welcome home {userName}
                         </h1>
                         :
                         <h1>

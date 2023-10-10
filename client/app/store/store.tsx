@@ -1,31 +1,35 @@
 'use client';
 import * as React from 'react';
+import { User } from '@/app/models/models';
 
+const blankUser = {
+    firstName: '', lastName: '', email: '', password: ''
+};
 
 interface ContextProps {
     isAuthenticated: boolean;
     setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
-    test: string;
-    setTest: React.Dispatch<React.SetStateAction<string>>;
+    user: User;
+    setUser: React.Dispatch<React.SetStateAction<User>>;
 }
 
 const GlobalContext = React.createContext<ContextProps>({
     isAuthenticated: false,
     setIsAuthenticated: (): boolean => false,
-    test: "",
-    setTest: (): string => ""
+    user: blankUser,
+    setUser: (): User => blankUser
 });
 
 export const GlobalContextProvider: React.FC<{ children: React.ReactNode; }> = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = React.useState<boolean>(false);
-    const [test, setTest] = React.useState<string>("");
+    const [user, setUser] = React.useState<User>(blankUser);
 
     return (
         <GlobalContext.Provider value={{
             isAuthenticated,
             setIsAuthenticated,
-            test,
-            setTest
+            user,
+            setUser
         }}>{children}</GlobalContext.Provider>
     );
 };
