@@ -35,9 +35,14 @@ const Navbar: React.FC = () => {
                 </Link>
                 {
                     !isAuthenticated ?
-                        <Link className={styles.navItem} href="/register">
-                            Register
-                        </Link>
+                        <div>
+                            <Link className={styles.navItem} href="/register">
+                                Register
+                            </Link>
+                            <Link className={styles.navItem} href="/login">
+                                Log In
+                            </Link>
+                        </div>
 
                         :
                         <div >

@@ -1,0 +1,62 @@
+@import '../styles/global.scss';
+
+.homeContainer {
+    // width: 798px;
+    height: 600px;
+    margin-top: 1rem;
+    background-color: $defaultBlack;
+    color: $defaultWhite;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .registerForm {
+        // gap: 0.5rem;
+        display: flex;
+        flex-direction: column;
+
+    }
+
+    .validationError {
+        display: flex;
+        color: $red;
+        justify-content: center;
+        font-size: 10px;
+        width: 15rem;
+
+        p {
+            height: 10px;
+        }
+
+    }
+
+    .submit {
+        cursor: pointer
+    }
+
+
+
+}
+
+.loading {
+
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+    color: $slateBlue
+}
+
+.confirmation {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+    color: $green
+}
+
+.confirmationRejected {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+    color: $red
+}
