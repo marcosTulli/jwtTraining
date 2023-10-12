@@ -17,8 +17,6 @@ export default function Home() {
         }
     }, [isAuthenticated]);
 
-    console.log(isAuthenticated);
-
     return (
         <>
             <NavBar />

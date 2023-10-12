@@ -79,6 +79,9 @@ app.delete('/', (req, res) => {
 });
 
 app.get('/seminars', (req, res) => {
+  if (!req.headers.authorization) {
+    return res.status(401).send({ message: 'You are not authorized' });
+  }
   getSeminars(req, res);
 });
 
