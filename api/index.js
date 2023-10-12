@@ -13,6 +13,8 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+const secret = 'secret';
+
 const drop = () => {
   (async function addUser() {
     let client;
@@ -45,7 +47,7 @@ const postUser = async (req, res) => {
     iss: req.hostname,
     sub: req.body.email,
   };
-  const token = jwt.encode(payload, 'shhh...');
+  const token = jwt.encode(payload, secret);
   try {
     const client = await MongoClient.connect(MONGO_URL);
     const db = client.db(DB_NAME);
@@ -81,8 +83,15 @@ app.delete('/', (req, res) => {
 app.get('/seminars', (req, res) => {
   if (!req.headers.authorization) {
     return res.status(401).send({ message: 'You are not authorized' });
+  } else {
+    const token = req.headers.authorization.split(' ')[1];
+    const payload = jwt.decode(token, secret);
+    if (!payload.sub) {
+      res.status(401).send({ message: 'Authentication failed' });
+    }
+
+    getSeminars(req, res);
   }
-  getSeminars(req, res);
 });
 
 app.listen(PORT, () => {
