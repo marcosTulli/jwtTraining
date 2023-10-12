@@ -6,7 +6,8 @@ const { MongoClient, ObjectID } = require('mongodb');
 const PORT = process.env.PORT || 3001;
 const MONGO_URL = process.env.MONGO_URL;
 const DB_NAME = process.env.DB_NAME;
-const jwt = require('./services/jwt');
+// const jwt = require('./services/jwt');
+const jwt = require('jwt-simple');
 
 const app = express();
 
@@ -30,6 +31,7 @@ const drop = () => {
 };
 
 const getSeminars = async (req, res) => {
+  console.log('Serving /semianrs');
   try {
     const client = await MongoClient.connect(MONGO_URL);
     const db = client.db('globomantics');
