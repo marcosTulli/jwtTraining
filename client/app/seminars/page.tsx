@@ -73,7 +73,7 @@ const Seminars: React.FC = () => {
                                     </div>
                                 ))
                                     : <div>
-                                        Missing Token
+                                        Loading Seminars ...
                                     </div>
                             }
 
