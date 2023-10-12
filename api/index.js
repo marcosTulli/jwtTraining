@@ -13,8 +13,23 @@ const app = express();
 
 app.use(express.json());
 app.use(cors());
-
 const secret = 'secret';
+
+const hash = async (string) => {
+  return new Promise((res, rej) => {
+    bcrypt.genSalt(10, (err, salt) => {
+      if (err) {
+        return rej(err);
+      }
+      bcrypt.hash(string, salt, null, (err, hash) => {
+        if (err) {
+          return rej(err);
+        }
+        res(hash);
+      });
+    });
+  });
+};
 
 const drop = () => {
   (async function addUser() {
@@ -44,6 +59,7 @@ const getSeminars = async (req, res) => {
 };
 
 const postUser = async (req, res) => {
+  req.body.password = await hash(req.body.password);
   const { firstName, lastName, email, password } = req.body;
   const payload = {
     iss: req.hostname,
@@ -63,7 +79,7 @@ const postUser = async (req, res) => {
       // User doesn't exist, so insert the new user
       const user = { firstName, lastName, email, password };
       await db.collection('users').insertOne(user);
-      res.status(200).send({ user: req.body, token: token }); // User created successfully
+      res.status(200).send({ email: user.email, token: token }); // User created successfully
     }
     client.close();
   } catch (error) {
@@ -75,6 +91,8 @@ const postUser = async (req, res) => {
 app.post('/register', (req, res) => {
   postUser(req, res);
 });
+
+app.get('/login', (req, res) => {});
 
 app.delete('/', (req, res) => {
   console.log('Dropping DB');

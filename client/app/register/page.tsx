@@ -7,7 +7,6 @@ import axios from 'axios';
 import { authToken } from "@/app/utils/index";
 import { User } from '@/app/models/models';
 import { useGlobalContext } from '../store/store';
-const base64 = require('base-64');
 
 const blankUser = {
     firstName: '', lastName: '', email: '', password: ''
@@ -74,7 +73,6 @@ const Register: React.FC = () => {
     const handleSubmit = async () => {
         if (validateForm()) {
             setIsLoading(true);
-            user.password = base64.encode(user.password);
             axios
                 .post(url, user)
                 .then((res) => {
@@ -87,6 +85,7 @@ const Register: React.FC = () => {
                 .catch((e) => {
                     setSignUpNok(!signUpNok);
                     setUser(blankUser);
+                    console.log(e);
                     if (e.response.status === 409) {
                         setRejectMessage("User already exists");
                         console.log("User Already exists");
