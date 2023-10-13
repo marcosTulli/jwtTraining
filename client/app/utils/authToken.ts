@@ -21,6 +21,7 @@ export const authToken = (window: Window) => {
         removeToken: function () {
             cachedToken = null;
             storage.removeItem(userToken);
+            storage.removeItem('user');
         }
     };
     return authToken;

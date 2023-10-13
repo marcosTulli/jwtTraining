@@ -76,10 +76,11 @@ const Register: React.FC = () => {
             axios
                 .post(url, user)
                 .then((res) => {
+                    const user = res.data.user;
+                    window.localStorage.setItem('user', user.firstName);
                     setSignUpOk(!signUpOk);
                     setFormValues(blankUser);
                     authToken(window).setToken(res.data.token);
-                    console.log("Registered succesfully");
                     router.push('/');
                 })
                 .catch((e) => {

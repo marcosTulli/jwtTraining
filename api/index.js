@@ -14,6 +14,18 @@ app.use(express.json());
 app.use(cors());
 const secret = 'secret';
 
+const tokenProvider = (req, res, user) => {
+  const payload = {
+    iss: req.hostname,
+    sub: req.body.email,
+  };
+  const token = jwt.encode(payload, secret);
+  res.status(200).send({
+    user: { id: user._id, firstName: user.firstName, lastName: user.lastName, email: user.email },
+    token: token,
+  });
+};
+
 const hash = async (string) => {
   return new Promise((res, rej) => {
     bcrypt.genSalt(10, (err, salt) => {
@@ -60,11 +72,11 @@ const getSeminars = async (req, res) => {
 const postUser = async (req, res) => {
   req.body.password = await hash(req.body.password);
   const { firstName, lastName, email, password } = req.body;
-  const payload = {
-    iss: req.hostname,
-    sub: req.body.email,
-  };
-  const token = jwt.encode(payload, secret);
+  // const payload = {
+  //   iss: req.hostname,
+  //   sub: req.body.email,
+  // };
+  // const token = jwt.encode(payload, secret);
   try {
     const client = await MongoClient.connect(MONGO_URL);
     const db = client.db(DB_NAME);
@@ -77,7 +89,8 @@ const postUser = async (req, res) => {
       // User doesn't exist, so insert the new user
       const user = { firstName, lastName, email, password };
       await db.collection('users').insertOne(user);
-      res.status(200).send({ email: user.email, token: token }); // User created successfully
+      tokenProvider(req, res, user);
+      // res.status(200).send({ email: user.email, token: token }); // User created successfully
     }
     client.close();
   } catch (error) {
@@ -104,7 +117,7 @@ const login = async (req, res) => {
           return;
         }
         if (isMatch) {
-          res.status(200).send({ id: foundUser._id, name: foundUser.firstName });
+          tokenProvider(req, res, foundUser);
         } else {
           res.status(401).send({ message: 'Username or password incorrect' });
         }

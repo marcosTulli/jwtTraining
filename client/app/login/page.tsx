@@ -12,14 +12,14 @@ const blankUser = {
     email: '', password: ''
 };
 
-const Register: React.FC = () => {
+const LogIn: React.FC = () => {
     const router = useRouter();
     const [formValues, setFormValues] = useState<UserCredentials>(blankUser);
     const [passcheck, setPassCheck] = useState<string | null>(null);
     const [enableSubmit, setEnableSubmit] = useState<boolean>(true);
     const [fieldError, setFieldError] = useState<string[]>([]);
     const [signUpOk, setSignUpOk] = useState(false);
-    const [rejectMessage, setRejectMessage] = useState<string>("Unable to add user");
+    const [rejectMessage, setRejectMessage] = useState<string>("Unable to Log in");
     const [signUpNok, setSignUpNok] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const { user, setUser, isAuthenticated } = useGlobalContext();
@@ -72,26 +72,18 @@ const Register: React.FC = () => {
             axios
                 .post(`${url}/login`, formValues)
                 .then((res) => {
-                    console.log(res);
-                    // setSignUpOk(!signUpOk);
-                    // setFormValues(blankUser);
-                    // authToken(window).setToken(res.data.token);
-                    // console.log("Registered succesfully");
-                    // router.push('/');
+                    const user = res.data.user;
+                    console.log(user);
+                    window.localStorage.setItem('user', user.firstName);
+                    setSignUpOk(!signUpOk);
+                    setFormValues(blankUser);
+                    authToken(window).setToken(res.data.token);
+                    router.push('/');
                 })
                 .catch((e) => {
                     console.log(e);
-                    // setSignUpNok(!signUpNok);
-                    // setUser(blankUser);
-                    // if (e.response.status === 409) {
-                    //     setRejectMessage("User already exists");
-                    //     console.log("User Already exists");
-                    // }
-                    // else {
-                    //     console.log("Unable to add user");
-                    // }
+                    setSignUpNok(!signUpNok);
                 }).finally(() => {
-                    console.log("TUKI");
                     setIsLoading(false);
                 });
         }
@@ -162,4 +154,4 @@ const Register: React.FC = () => {
     );
 };
 
-export default Register;
+export default LogIn;
