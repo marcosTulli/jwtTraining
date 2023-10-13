@@ -4,9 +4,12 @@ export interface User {
     lastName: string;
     email: string;
     password: string;
-
 }
 
+export interface UserCredentials {
+    email: string;
+    password: string;
+}
 export interface Speaker {
     id: string;
     name: string;

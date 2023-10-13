@@ -6,7 +6,6 @@ const { MongoClient, ObjectID } = require('mongodb');
 const PORT = process.env.PORT || 3001;
 const MONGO_URL = process.env.MONGO_URL;
 const DB_NAME = process.env.DB_NAME;
-// const jwt = require('./services/jwt');
 const jwt = require('jwt-simple');
 
 const app = express();
@@ -69,7 +68,6 @@ const postUser = async (req, res) => {
   try {
     const client = await MongoClient.connect(MONGO_URL);
     const db = client.db(DB_NAME);
-
     // Check if the user with the given email already exists
     const existingUser = await db.collection('users').findOne({ email });
     if (existingUser) {
@@ -88,11 +86,45 @@ const postUser = async (req, res) => {
   }
 };
 
+const comparePasswords = (password, callback) => {
+  bcrypt.compare(password);
+};
+
+const login = async (req, res) => {
+  try {
+    const reqUser = req.body;
+    const client = await MongoClient.connect(MONGO_URL);
+    const db = client.db(DB_NAME);
+    const foundUser = await db.collection('users').findOne({ email: reqUser.email });
+    if (foundUser) {
+      bcrypt.compare(reqUser.password, foundUser.password, (err, isMatch) => {
+        if (err) {
+          res.status(500).send({ message: 'Server error' });
+          console.log(err);
+          return;
+        }
+        if (isMatch) {
+          res.status(200).send({ id: foundUser._id, name: foundUser.firstName });
+        } else {
+          res.status(401).send({ message: 'Username or password incorrect' });
+        }
+      });
+    } else {
+      res.status(401).send({ message: 'Username or password incorrect' });
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({ message: 'Internal server error' });
+  }
+};
+
 app.post('/register', (req, res) => {
   postUser(req, res);
 });
 
-app.get('/login', (req, res) => {});
+app.post('/login', (req, res) => {
+  login(req, res);
+});
 
 app.delete('/', (req, res) => {
   console.log('Dropping DB');

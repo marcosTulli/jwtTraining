@@ -5,17 +5,16 @@ import NavBar from '@/app/components/nav/NavBar';
 import styles from './LogIn.module.scss';
 import axios from 'axios';
 import { authToken } from "@/app/utils/index";
-import { User } from '@/app/models/models';
+import { UserCredentials } from '@/app/models/models';
 import { useGlobalContext } from '../store/store';
-const base64 = require('base-64');
 
 const blankUser = {
-    firstName: '', lastName: '', email: '', password: ''
+    email: '', password: ''
 };
 
 const Register: React.FC = () => {
     const router = useRouter();
-    const [formValues, setFormValues] = useState<User>(blankUser);
+    const [formValues, setFormValues] = useState<UserCredentials>(blankUser);
     const [passcheck, setPassCheck] = useState<string | null>(null);
     const [enableSubmit, setEnableSubmit] = useState<boolean>(true);
     const [fieldError, setFieldError] = useState<string[]>([]);
@@ -24,7 +23,7 @@ const Register: React.FC = () => {
     const [signUpNok, setSignUpNok] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const { user, setUser, isAuthenticated } = useGlobalContext();
-    const url = 'http://localhost:3001/register'; // TODO: Create .env file
+    const url = 'http://localhost:3001'; // TODO: Create .env file
     const emailRegex = /^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/;
     const messages: Record<string, string> = {
         email: 'Email must contain @ symbol and a domain',
@@ -70,32 +69,31 @@ const Register: React.FC = () => {
     const handleLogIn = async () => {
         if (validateForm()) {
             setIsLoading(true);
-            user.password = base64.encode(user.password);
-            // axios
-            //     .post(url, user)
-            //     .then((res) => {
-            //         setSignUpOk(!signUpOk);
-            //         setFormValues(blankUser);
-            //         authToken(window).setToken(res.data.token);
-            //         console.log("Registered succesfully");
-            //         router.push('/');
-            //     })
-            //     .catch((e) => {
-            //         setSignUpNok(!signUpNok);
-            //         setUser(blankUser);
-            //         if (e.response.status === 409) {
-            //             setRejectMessage("User already exists");
-            //             console.log("User Already exists");
-            //         }
-            //         else {
-            //             console.log("Unable to add user");
-            //         }
-            //     }).finally(() => {
-            //         setPassCheck("");
-            //         setIsLoading(false);
-            //     });
-
-            console.log("Log IN");
+            axios
+                .post(`${url}/login`, formValues)
+                .then((res) => {
+                    console.log(res);
+                    // setSignUpOk(!signUpOk);
+                    // setFormValues(blankUser);
+                    // authToken(window).setToken(res.data.token);
+                    // console.log("Registered succesfully");
+                    // router.push('/');
+                })
+                .catch((e) => {
+                    console.log(e);
+                    // setSignUpNok(!signUpNok);
+                    // setUser(blankUser);
+                    // if (e.response.status === 409) {
+                    //     setRejectMessage("User already exists");
+                    //     console.log("User Already exists");
+                    // }
+                    // else {
+                    //     console.log("Unable to add user");
+                    // }
+                }).finally(() => {
+                    console.log("TUKI");
+                    setIsLoading(false);
+                });
         }
     };
 
