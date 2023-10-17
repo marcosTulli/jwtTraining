@@ -77,10 +77,10 @@ const Register: React.FC = () => {
                 .post(url, user)
                 .then((res) => {
                     const user = res.data.user;
-                    window.localStorage.setItem('user', user.firstName);
                     setSignUpOk(!signUpOk);
                     setFormValues(blankUser);
                     authToken(window).setToken(res.data.token);
+                    window.localStorage.setItem('user', user.firstName);
                     router.push('/');
                 })
                 .catch((e) => {

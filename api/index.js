@@ -8,11 +8,11 @@ const MONGO_URL = process.env.MONGO_URL;
 const DB_NAME = process.env.DB_NAME;
 const jwt = require('jwt-simple');
 
+const secret = 'secret';
 const app = express();
 
 app.use(express.json());
 app.use(cors());
-const secret = 'secret';
 
 const tokenProvider = (req, res, user) => {
   const payload = {
@@ -69,38 +69,26 @@ const getSeminars = async (req, res) => {
   }
 };
 
-const postUser = async (req, res) => {
+const createUser = async (req, res) => {
   req.body.password = await hash(req.body.password);
   const { firstName, lastName, email, password } = req.body;
-  // const payload = {
-  //   iss: req.hostname,
-  //   sub: req.body.email,
-  // };
-  // const token = jwt.encode(payload, secret);
   try {
     const client = await MongoClient.connect(MONGO_URL);
     const db = client.db(DB_NAME);
-    // Check if the user with the given email already exists
     const existingUser = await db.collection('users').findOne({ email });
     if (existingUser) {
       console.log('Unable to fulfill request, user exists');
-      res.sendStatus(409); // User already exists
+      res.sendStatus(409);
     } else {
-      // User doesn't exist, so insert the new user
       const user = { firstName, lastName, email, password };
       await db.collection('users').insertOne(user);
       tokenProvider(req, res, user);
-      // res.status(200).send({ email: user.email, token: token }); // User created successfully
     }
     client.close();
   } catch (error) {
     console.error(error);
-    res.sendStatus(500); // Internal Server Error
+    res.sendStatus(500);
   }
-};
-
-const comparePasswords = (password, callback) => {
-  bcrypt.compare(password);
 };
 
 const login = async (req, res) => {
@@ -132,7 +120,7 @@ const login = async (req, res) => {
 };
 
 app.post('/register', (req, res) => {
-  postUser(req, res);
+  createUser(req, res);
 });
 
 app.post('/login', (req, res) => {
