@@ -9,8 +9,8 @@ import axios from 'axios';
 const Navbar: React.FC = () => {
     const router = useRouter();
     const url = 'http://localhost:3001'; // TODO: Create .env file
-    const user = window.localStorage.getItem('user');
-    const { isAuthenticated, setIsAuthenticated } = useGlobalContext();
+    const { isAuthenticated, setIsAuthenticated, user } = useGlobalContext();
+    const userName = user.firstName?.charAt(0).toUpperCase().concat(user.firstName?.substring(1));
 
     const handleLogOut = () => {
         authToken(window).removeToken();
@@ -23,7 +23,7 @@ const Navbar: React.FC = () => {
             .then(() => console.log("Deleted DB"))
             .catch((e) => console.log(e));
     };
-    const userName = user?.charAt(0).toUpperCase().concat(user?.substring(1));
+    // const userName = user?.charAt(0).toUpperCase().concat(user?.substring(1));
     useEffect(() => { if (isAuthenticated) { console.log("Authenticated"); } }, [isAuthenticated]);
     return (
         <nav>

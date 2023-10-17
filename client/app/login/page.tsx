@@ -8,8 +8,11 @@ import { authToken } from "@/app/utils/index";
 import { UserCredentials } from '@/app/models/models';
 import { useGlobalContext } from '../store/store';
 
+// const blankUser = {
+//     email: '', password: ''
+// };
 const blankUser = {
-    email: '', password: ''
+    firstName: '', lastName: '', email: '', password: ''
 };
 
 const LogIn: React.FC = () => {

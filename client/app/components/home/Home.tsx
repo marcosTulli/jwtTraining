@@ -1,5 +1,5 @@
 // TODO: Use eslint vscode extension
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './Home.module.scss';
 import { useMediaQuery } from '@mui/material';
 import NavBar from '@/app/components/nav/NavBar';
@@ -7,10 +7,16 @@ import { useGlobalContext } from '@/app/store/store';
 import { authToken } from '@/app/utils';
 
 export default function Home() {
-    const { isAuthenticated, setIsAuthenticated } = useGlobalContext();
+    const { isAuthenticated, setIsAuthenticated, user, setUser } = useGlobalContext();
     const isMobile = useMediaQuery('(max-width: 500px)');
-    const user = window.localStorage.getItem('user');
-    const userName = user?.charAt(0).toUpperCase().concat(user?.substring(1));
+    const userName = user.firstName?.charAt(0).toUpperCase().concat(user.firstName?.substring(1));
+
+    useEffect(() => {
+        if (window.localStorage.getItem('user')) {
+            setUser({ ...user, firstName: String(window.localStorage.getItem('user')) });
+        }
+    }, []);
+
 
     useEffect(() => {
         if (!isAuthenticated) {
