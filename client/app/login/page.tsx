@@ -7,10 +7,10 @@ import axios from 'axios';
 import { authToken } from "@/app/utils/index";
 import { UserCredentials } from '@/app/models/models';
 import { useGlobalContext } from '../store/store';
+import { authGoogle } from '../utils/authGoogle';
 
-// const blankUser = {
-//     email: '', password: ''
-// };
+
+
 const blankUser = {
     firstName: '', lastName: '', email: '', password: ''
 };
@@ -26,7 +26,7 @@ const LogIn: React.FC = () => {
     const [signUpNok, setSignUpNok] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const { user, setUser, isAuthenticated } = useGlobalContext();
-    const url = 'http://localhost:3001'; // TODO: Create .env file
+    const url = process.env.NEXT_PUBLIC_API_URL; // TODO: Create .env file
     const emailRegex = /^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/;
     const messages: Record<string, string> = {
         email: 'Email must contain @ symbol and a domain',
@@ -52,6 +52,8 @@ const LogIn: React.FC = () => {
             router.push('/');
         }
     }, [isAuthenticated]);
+
+
 
     useEffect(() => {
         if (user.email.length > 3) {
@@ -90,6 +92,10 @@ const LogIn: React.FC = () => {
                     setIsLoading(false);
                 });
         }
+    };
+
+    const handleGoogleLogin = async () => {
+        authGoogle(window).tuki();
     };
 
     useEffect(() => {
@@ -133,10 +139,15 @@ const LogIn: React.FC = () => {
                         <div className={styles.validationError}>
                             {fieldError.includes('password') ? <p>{messages.password}</p> : <p></p>}
                         </div>
-                        <button disabled={enableSubmit} onClick={handleLogIn} type="button" className={styles.submit}>
+                        <button onClick={handleLogIn}
+                            type="button" className={styles.submit}>
                             Log In
                         </button>
-                        {/* TODO: Optimize rendering */}
+                        <button onClick={handleGoogleLogin} type="button" className={styles.submit}>
+                            Log In with Google
+                        </button>
+
+
                     </form>
                     {
                         isLoading ? <p className={styles.loading}> Loading ... </p>
