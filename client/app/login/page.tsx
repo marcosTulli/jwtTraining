@@ -18,7 +18,6 @@ const blankUser = {
 const LogIn: React.FC = () => {
     const router = useRouter();
     const [formValues, setFormValues] = useState<UserCredentials>(blankUser);
-    const [passcheck, setPassCheck] = useState<string | null>(null);
     const [enableSubmit, setEnableSubmit] = useState<boolean>(true);
     const [fieldError, setFieldError] = useState<string[]>([]);
     const [signUpOk, setSignUpOk] = useState(false);
@@ -32,8 +31,6 @@ const LogIn: React.FC = () => {
         email: 'Email must contain @ symbol and a domain',
         password: 'Password must be at least 8 characters long'
     };
-
-
 
     const validateForm = () => {
         const errors: Record<string, string> = {};
@@ -95,7 +92,7 @@ const LogIn: React.FC = () => {
     };
 
     const handleGoogleLogin = async () => {
-        authGoogle(window).tuki();
+        authGoogle(window).openAuth();
     };
 
     useEffect(() => {
@@ -107,7 +104,6 @@ const LogIn: React.FC = () => {
         }
 
     }, [signUpOk, signUpNok]);
-
 
     return (
         <div>

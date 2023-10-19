@@ -6,7 +6,7 @@ import { authToken } from '@/app/utils';
 import { useEffect } from 'react';
 import axios from 'axios';
 
-const Navbar: React.FC = () => {
+const Navbar = (): JSX.Element => {
     const router = useRouter();
     const url = 'http://localhost:3001'; // TODO: Create .env file
     const { isAuthenticated, setIsAuthenticated, user } = useGlobalContext();
@@ -23,7 +23,6 @@ const Navbar: React.FC = () => {
             .then(() => console.log("Deleted DB"))
             .catch((e) => console.log(e));
     };
-    // const userName = user?.charAt(0).toUpperCase().concat(user?.substring(1));
     useEffect(() => { if (isAuthenticated) { console.log("Authenticated"); } }, [isAuthenticated]);
     return (
         <nav>

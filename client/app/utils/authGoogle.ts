@@ -1,5 +1,3 @@
-import { collectGenerateParams } from "next/dist/build/utils";
-
 export const authGoogle = (window: Window) => {
     const storage = window.localStorage;
     const userToken = 'userToken';
@@ -12,8 +10,6 @@ export const authGoogle = (window: Window) => {
     top=${(window.outerHeight - 500) / 2.5}
     `;
     const urlBuilder: string[] = [];
-
-
     urlBuilder.push(
         'response_type=code',
         `client_id=${clientId}`,
@@ -21,30 +17,23 @@ export const authGoogle = (window: Window) => {
         'scope=profile email'
     );
 
-    let cachedToken: string | null;
-
     const authGoogle = {
-        tuki: () => {
+        openAuth: async () => {
+            const url = `${authURI}?${urlBuilder.join('&')}`;
+            const popup = window.open(url, '', options);
 
-            console.log(authURI);
-            console.log(urlBuilder.join("&"));
-            window.open(`${authURI}?${urlBuilder.join('&')}`, '', options);
+            if (popup) {
+                window.focus();
+                window.addEventListener('message', (event) => {
+                    if (event.origin === window.location.origin && event.data.length > 0) {
+                        console.log(event.data);
 
-        },
-        taka: () => {
-            if (!cachedToken) {
-                cachedToken = storage.getItem(userToken);
+                        popup.close();
+                    }
+                });
             }
-            return cachedToken;
-        },
-        tiki: function () {
-            return !!this.taka();
-        },
-        teke: function () {
-            cachedToken = null;
-            storage.removeItem(userToken);
-            storage.removeItem('user');
         }
     };
+
     return authGoogle;
 };

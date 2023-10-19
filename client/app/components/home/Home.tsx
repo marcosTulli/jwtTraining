@@ -6,10 +6,21 @@ import NavBar from '@/app/components/nav/NavBar';
 import { useGlobalContext } from '@/app/store/store';
 import { authToken } from '@/app/utils';
 
-export default function Home() {
-    const { isAuthenticated, setIsAuthenticated, user, setUser } = useGlobalContext();
+export interface HomeProps {
+    authCode?: string;
+}
+
+export default function Home({ authCode }: HomeProps): JSX.Element {
+    const { setAuthCode, isAuthenticated, setIsAuthenticated, user, setUser } = useGlobalContext();
     const isMobile = useMediaQuery('(max-width: 500px)');
     const userName = user.firstName?.charAt(0).toUpperCase().concat(user.firstName?.substring(1));
+
+    useEffect(() => {
+        if (authCode) {
+            setAuthCode(authCode);
+        }
+
+    }, [authCode]);
 
     useEffect(() => {
         if (window.localStorage.getItem('user')) {
@@ -24,9 +35,11 @@ export default function Home() {
         }
     }, [isAuthenticated]);
 
+
+
     return (
         <>
-            <NavBar />
+            <NavBar authCode={authCode} />
             <div className={styles.homeContainer}>
                 {
                     isAuthenticated
@@ -35,9 +48,13 @@ export default function Home() {
                             Welcome home {userName}
                         </h1>
                         :
-                        <h1>
-                            Please, log in or register
-                        </h1>
+                        <div>
+                            <h1>
+                                Please, log in or register
+                            </h1>
+                            <div>{authCode}</div>
+                        </div>
+
                 }
             </div>
         </>

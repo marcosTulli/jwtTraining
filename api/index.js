@@ -57,7 +57,7 @@ const drop = () => {
 };
 
 const getSeminars = async (req, res) => {
-  console.log('Serving /semianrs');
+  console.log('Serving /seminars');
   try {
     const client = await MongoClient.connect(MONGO_URL);
     const db = client.db('globomantics');
