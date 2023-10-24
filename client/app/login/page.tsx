@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import NavBar from '@/app/components/nav/NavBar';
 import styles from './LogIn.module.scss';
@@ -91,9 +91,10 @@ const LogIn: React.FC = () => {
         }
     };
 
-    const handleGoogleLogin = async () => {
+    const handleGoogleLogin = useCallback(async () => {
         authGoogle(window).openAuth();
-    };
+    }, []);
+
 
     useEffect(() => {
         if (signUpOk) {

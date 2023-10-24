@@ -1,6 +1,9 @@
+import axios from "axios";
+
 export const authGoogle = (window: Window) => {
     const storage = window.localStorage;
     const userToken = 'userToken';
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
     const authURI = process.env.NEXT_PUBLIC_AUTH_URI;
     const clientId = process.env.NEXT_PUBLIC_CLIENT_ID;
     const options = `
@@ -19,16 +22,23 @@ export const authGoogle = (window: Window) => {
 
     const authGoogle = {
         openAuth: async () => {
+            let isRequestSent = false;
             const url = `${authURI}?${urlBuilder.join('&')}`;
             const popup = window.open(url, '', options);
-
             if (popup) {
                 window.focus();
                 window.addEventListener('message', (event) => {
-                    if (event.origin === window.location.origin && event.data.length > 0) {
-                        console.log(event.data);
-
-                        popup.close();
+                    const authCode = event.data;
+                    popup.close();
+                    if (authCode && !isRequestSent) {
+                        axios.post(`
+                        ${apiUrl}/auth/google`,
+                            {
+                                code: authCode,
+                                clientId: clientId,
+                                redirectUri: window.location.origin
+                            });
+                        isRequestSent = true;
                     }
                 });
             }

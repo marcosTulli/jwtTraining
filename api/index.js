@@ -7,6 +7,9 @@ const PORT = process.env.PORT || 3001;
 const MONGO_URL = process.env.MONGO_URL;
 const DB_NAME = process.env.DB_NAME;
 const jwt = require('jwt-simple');
+const axios = require('axios');
+const request = require('request');
+const { google } = require('googleapis');
 
 const secret = 'secret';
 const app = express();
@@ -145,6 +148,37 @@ app.get('/seminars', (req, res) => {
 
     getSeminars(req, res);
   }
+});
+
+app.post('/auth/google', (req, res) => {
+  const url = process.env.AUTH_URL;
+  const CLIENT_ID = req.body.clientId;
+  const CLIENT_SECRET = process.env.CLIENT_SECRET;
+  const REDIRECT_URI = req.body.redirectUri;
+  const scopes = ['https://googleapis.com/auth/drive.metadata.readonly'];
+  const oauth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
+
+  const authorizationURL = oauth2Client.generateAuthUrl({
+    access_type: 'online',
+
+    scope: scopes,
+    include_granted_scopes: true,
+  });
+
+  // const params = {
+  //   client_id: req.body.clientId,
+  //   redirect_uri: req.body.redirectUri,
+  //   code: req.body.code,
+  //   grant_type: 'authorization_code',
+  //   client_secret: process.env.CLIENT_SECRET,
+  // };
+  // console.log(process.env.CLIENT_SECRET);
+  // console.log(req.body.clientId);
+  // request.post(url, { json: true, form: params }, (err, res, token) => {
+  //   console.log(token);
+  //   console.log(res.headers);
+  //   response.status(200).send(token);
+  // });
 });
 
 app.listen(PORT, () => {
